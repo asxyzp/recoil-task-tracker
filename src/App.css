@@ -11,18 +11,18 @@
 }
 
 #input-form {
-    width: 50%;
+    width: 55%;
     display: flex;
     margin-top: 10px;
     flex-direction: column;
 }
 
 .MuiTabs-root {
-    width: 50%;
+    width: 55%;
 }
 
 .tabpanel {
-    width: 50%;
+    width: 55%;
 }
 
 @media screen and (max-width: 768px) {
