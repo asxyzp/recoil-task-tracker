@@ -1,15 +1,12 @@
 // IMPORTING MODULES/PACKAGES
 import './App.css';
 import React from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import { useRecoilState } from 'recoil';
 import NoContentBox from './Components/Custom/NoContentBox';
 import { Animation, LightMode, DarkMode } from '@mui/icons-material';
 import { taskInput, activeTasks, completedTasks, darkMode } from './Context/atoms';
 import { Box, Button, CssBaseline, InputBase, ThemeProvider, Typography, FormControl, IconButton, Tabs, Tab, Skeleton } from '@mui/material';
-
-// IMPORTING API ENDPOINTS
-import getActiveTasks from './API/getActiveTasks';
-import getCompletedTasks from './API/getCompletedTasks';
 
 // IMPORTING THEMES
 import DarkTheme from './Theme/Dark';
@@ -18,6 +15,7 @@ import LightTheme from './Theme/Light';
 // IMPORTING IMAGES
 import TakenImg from "./Resources/taken.svg";
 import TowingImg from "./Resources/towing.svg";
+import TaskListItem from './Components/Custom/TaskListItem';
 
 // COMPONENTS
 /**
@@ -96,29 +94,19 @@ function App() {
         setDarkModeState(!darkModeState);
     };
 
-    /**
-     * @name getTaskData
-     * @description METHOD TO GET TASK DATA FOR ACTIVE & COMPLETED TASKS
-     * @returns undefined
-     */
-    const getTaskData = async () => {
-
-        let res = await getActiveTasks();
-        if (res.status === 200) {
-            const tasks = await res.json();
-            setActiveTaskState([...tasks]);
-        }
-
-        res = await getCompletedTasks();
-        if (res.status === 200) {
-            const tasks = await res.json();
-            setCompletedTaskState([...tasks]);
-        }
+    const addToActiveTaskList = (event) => {
+        event.preventDefault();
+        const task = {
+            id: uuidv4(),
+            type: "active",
+            task: taskInputState,
+            addedOn: Date.now(),
+            completedOn: "",
+            addedBy: "defaultUser"
+        };
+        setActiveTaskState([...activeTaskState, task]);
+        setTaskInputState("");
     };
-
-    React.useEffect(() => {
-        getTaskData();
-    }, []);
 
     return (
         <ThemeProvider theme={darkModeState === true ? DarkTheme : LightTheme}>
@@ -146,12 +134,12 @@ function App() {
                             sx={{ "&.MuiInputBase-root": { m: "5px" } }} />
                     </FormControl>
                     <Typography variant="caption" sx={{ textAlign: "right", my: "5px" }}>{taskInputState.length} characters</Typography>
-                    <Button variant="outlined" sx={{ textTransform: "none", fontSize: "1rem" }} disabled={!(taskInputState.length > 0 && taskInputState.length < 280)}> Add new task </Button>
+                    <Button variant="outlined" sx={{ textTransform: "none", fontSize: "1rem" }} disabled={!(taskInputState.length > 0 && taskInputState.length < 280)} onClick={addToActiveTaskList}> Add a new task </Button>
                 </form>
 
                 <Tabs value={tabValue} onChange={changeTabValue} aria-label="Task tab" sx={{ mt: "1rem", "& .MuiTabs-indicator": { display: "none" } }}>
-                    <Tab sx={{ "&.MuiTab-root": { textTransform: "none", flexGrow: "1" }, "&.Mui-selected": { backgroundColor: "primary.main", color: "common.white", borderRadius: "5px" } }} label="Active" {...tabProps(0)} />
-                    <Tab sx={{ "&.MuiTab-root": { textTransform: "none", flexGrow: "1" }, "&.Mui-selected": { backgroundColor: "primary.main", color: "common.white", borderRadius: "5px" } }} label="Completed" {...tabProps(1)} />
+                    <Tab sx={{ "&.MuiTab-root": { textTransform: "none", flexGrow: "1" }, "&.Mui-selected": { backgroundColor: "primary.main", color: "common.white", borderRadius: "5px" } }} label="Active tasks" {...tabProps(0)} />
+                    <Tab sx={{ "&.MuiTab-root": { textTransform: "none", flexGrow: "1" }, "&.Mui-selected": { backgroundColor: "primary.main", color: "common.white", borderRadius: "5px" } }} label="Completed tasks" {...tabProps(1)} />
                 </Tabs>
 
                 <TabPanel tabValue={tabValue} index={0}>
@@ -160,7 +148,7 @@ function App() {
                             <Skeleton variant="rectangular" sx={{ width: "100%", height: "40vh", borderRadius: "5px" }} /> :
                             activeTaskState.length === 0 ?
                                 <NoContentBox imgSrc={TakenImg} text="No active tasks" /> :
-                                "Some active tasks here"
+                                activeTaskState.map((task)=>{return <TaskListItem key={task.id} taskData={task} />})
                     }
                 </TabPanel>
                 <TabPanel tabValue={tabValue} index={1}>
@@ -169,7 +157,7 @@ function App() {
                             <Skeleton variant="rectangular" sx={{ width: "100%", height: "40vh", borderRadius: "5px" }} /> :
                             completedTaskState.length === 0 ?
                                 <NoContentBox imgSrc={TowingImg} text="No completed tasks" /> :
-                                "Some completed tasks here"
+                                completedTaskState.map((task)=>{return <TaskListItem key={task.id} taskData={task} />})
                     }
                 </TabPanel>
 
