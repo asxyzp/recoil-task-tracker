@@ -1,0 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans&display=swap');
+
+.app-container {
+    display: flex;
+    height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    align-items: center;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+#input-form {
+    width: 50%;
+    display: flex;
+    margin-top: 10px;
+    flex-direction: column;
+}
+
+.MuiTabs-root {
+    width: 50%;
+}
+
+.tabpanel {
+    width: 50%;
+}
+
+@media screen and (max-width: 768px) {
+    #input-form {
+        width: 75%;
+    }
+
+    .MuiTabs-root {
+        width: 75%;
+    }
+
+    .tabpanel {
+        width: 75%;
+    }
+}
+
+@media screen and (max-width: 512px) {
+    #input-form {
+        width: 90%;
+    }
+
+    .MuiTabs-root {
+        width: 90%;
+    }
+
+    .tabpanel {
+        width: 90%;
+    }
+}
