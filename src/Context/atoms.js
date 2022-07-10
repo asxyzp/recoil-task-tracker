@@ -10,17 +10,17 @@ export const taskInput = atom({
 // STORES DARK MODE STATE
 export const darkMode = atom({
     key: "darkMode",
-    default: false
+    default: true
 });
 
 // STORES ACTIVE TASKS
 export const activeTasks = atom({
     key: "activeTasks",
-    default: null
+    default: []
 });
 
 // STORES COMPLETED TASKS
 export const completedTasks = atom({
     key: "completedTasks",
-    default: null
+    default: []
 });
